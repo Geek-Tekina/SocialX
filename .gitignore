@@ -1,0 +1,5 @@
+Notes.md
+identity-service/.env
+identity-service/node_modules
+api-gateway/.env
+api-gateway/node_modules
