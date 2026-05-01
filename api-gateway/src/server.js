@@ -12,7 +12,7 @@ const errorHandler = require("./middleware/errorhandler");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const redisClient = new Redis(process.env.REDIS_URL);
+// const redisClient = new Redis(process.env.REDIS_URL);
 
 app.use(helmet());
 app.use(cors());
@@ -28,9 +28,9 @@ const ratelimitOptions = rateLimit({
     logger.warn(`Sensitive endpoint rate limit exceeded for IP: ${req.ip}`);
     res.status(429).json({ success: false, message: "Too many requests" });
   },
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.call(...args),
-  }),
+  // store: new RedisStore({
+  //   sendCommand: (...args) => redisClient.call(...args),
+  // }),
 });
 
 app.use(ratelimitOptions);
