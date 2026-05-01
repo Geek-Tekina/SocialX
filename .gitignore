@@ -3,3 +3,5 @@ identity-service/.env
 identity-service/node_modules
 api-gateway/.env
 api-gateway/node_modules
+post-service/node_modules
+post-service/.env
