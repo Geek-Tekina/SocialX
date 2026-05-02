@@ -5,3 +5,7 @@ api-gateway/.env
 api-gateway/node_modules
 post-service/node_modules
 post-service/.env
+media-service/.env
+media-service/node_modules
+search-service/.env
+search-service/node_modules
