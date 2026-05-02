@@ -36,4 +36,48 @@ const createPost = async (req, res) => {
     });
   }
 };
-module.exports = { createPost };
+
+const getAllPosts = async (req, res) => {
+  try {
+    logger.info("Get all posts endpoint hit");
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+
+    const cacheKey = `posts:${page}:${limit}`;
+    const cachedPosts = await req.redisClient.get(cacheKey);
+
+    if (cachedPosts) {
+      logger.info("Posts found in redis, returning from here.");
+      return res.json(JSON.parse(cachedPosts));
+    }
+
+    const posts = await Post.find({})
+      .sort({ createdAt: -1 })
+      .skip(startIndex)
+      .limit(limit);
+
+    const totalNoOfPosts = await Post.countDocuments();
+
+    const result = {
+      posts,
+      currentpage: page,
+      totalPages: Math.ceil(totalNoOfPosts / limit),
+      totalPosts: totalNoOfPosts,
+    };
+
+    //save your posts in redis cache
+    logger.info("Cached the posts to redis.");
+    await req.redisClient.setex(cacheKey, 300, JSON.stringify(result));
+
+    res.json(result);
+  } catch (e) {
+    logger.error("Error fetching posts", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching posts",
+    });
+  }
+};
+module.exports = { createPost, getAllPosts };

@@ -17,7 +17,7 @@ mongoose
   .then(() => logger.info("Connected to mongodb"))
   .catch((e) => logger.error("Mongo connection error", e));
 
-// const redisClient = new Redis(process.env.REDIS_URL);
+const redisClient = new Redis(process.env.REDIS_URL);
 
 //middleware
 app.use(helmet());
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 app.use(
   "/api/posts",
   (req, res, next) => {
-    // req.redisClient = redisClient;
+    req.redisClient = redisClient;
     next();
   },
   postRoutes
