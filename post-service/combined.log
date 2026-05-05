@@ -38,3 +38,5 @@
 {"level":"info","message":"Request body, [object Object]","service":"post-service","timestamp":"2026-05-02T18:48:43.729Z"}
 {"level":"info","message":"Get all posts endpoint hit","service":"post-service","timestamp":"2026-05-02T18:48:43.733Z"}
 {"level":"info","message":"Posts found in redis, returning from here.","service":"post-service","timestamp":"2026-05-02T18:48:43.739Z"}
+{"level":"info","message":"Post service running on port 3002","service":"post-service","timestamp":"2026-05-05T16:01:00.537Z"}
+{"level":"info","message":"Connected to mongodb","service":"post-service","timestamp":"2026-05-05T16:01:00.996Z"}
