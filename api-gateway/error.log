@@ -1,0 +1,2 @@
+{"level":"error","message":"Proxy error: getaddrinfo ENOTFOUND gttp","service":"api-gateway","timestamp":"2026-05-06T19:14:12.659Z"}
+{"level":"error","message":"Proxy error: getaddrinfo ENOTFOUND gttp","service":"api-gateway","timestamp":"2026-05-06T19:17:55.078Z"}

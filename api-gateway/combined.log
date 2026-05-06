@@ -43,3 +43,34 @@
 {"level":"info","message":"Received GET request to /v1/posts/all-posts","service":"api-gateway","timestamp":"2026-05-02T18:48:43.709Z"}
 {"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-02T18:48:43.711Z"}
 {"level":"info","message":"Response received from Post service: 200","service":"api-gateway","timestamp":"2026-05-02T18:48:43.742Z"}
+{"level":"info","message":"API Gateway is running on port 3000","service":"api-gateway","timestamp":"2026-05-06T19:05:40.416Z"}
+{"level":"info","message":"Identity service is running on port http://localhost:3001","service":"api-gateway","timestamp":"2026-05-06T19:05:40.423Z"}
+{"level":"info","message":"Media service is running on port gttp://localhost:3003","service":"api-gateway","timestamp":"2026-05-06T19:05:40.424Z"}
+{"level":"info","message":"Redis Url redis://localhost:6379","service":"api-gateway","timestamp":"2026-05-06T19:05:40.425Z"}
+{"level":"info","message":"Received POST request to /v1/auth/login","service":"api-gateway","timestamp":"2026-05-06T19:09:53.123Z"}
+{"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-06T19:09:53.126Z"}
+{"level":"info","message":"Response received from Identity service: 200","service":"api-gateway","timestamp":"2026-05-06T19:09:54.028Z"}
+{"level":"info","message":"Received POST request to //v1/media/upload","service":"api-gateway","timestamp":"2026-05-06T19:14:03.719Z"}
+{"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-06T19:14:03.721Z"}
+{"level":"info","message":"Received POST request to /v1/media/upload","service":"api-gateway","timestamp":"2026-05-06T19:14:09.826Z"}
+{"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-06T19:14:09.827Z"}
+{"level":"error","message":"Proxy error: getaddrinfo ENOTFOUND gttp","service":"api-gateway","timestamp":"2026-05-06T19:14:12.659Z"}
+{"level":"info","message":"Received POST request to /v1/media/upload","service":"api-gateway","timestamp":"2026-05-06T19:17:52.356Z"}
+{"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-06T19:17:52.357Z"}
+{"level":"error","message":"Proxy error: getaddrinfo ENOTFOUND gttp","service":"api-gateway","timestamp":"2026-05-06T19:17:55.078Z"}
+{"level":"info","message":"API Gateway is running on port 3000","service":"api-gateway","timestamp":"2026-05-06T19:18:09.156Z"}
+{"level":"info","message":"Identity service is running on port http://localhost:3001","service":"api-gateway","timestamp":"2026-05-06T19:18:09.161Z"}
+{"level":"info","message":"Media service is running on port http://localhost:3003","service":"api-gateway","timestamp":"2026-05-06T19:18:09.162Z"}
+{"level":"info","message":"Redis Url redis://localhost:6379","service":"api-gateway","timestamp":"2026-05-06T19:18:09.163Z"}
+{"level":"info","message":"Received POST request to /v1/media/upload","service":"api-gateway","timestamp":"2026-05-06T19:20:04.801Z"}
+{"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-06T19:20:04.803Z"}
+{"level":"info","message":"Response received from media service: 400","service":"api-gateway","timestamp":"2026-05-06T19:20:05.258Z"}
+{"level":"info","message":"Received POST request to /v1/media/upload","service":"api-gateway","timestamp":"2026-05-06T19:20:45.511Z"}
+{"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-06T19:20:45.512Z"}
+{"level":"info","message":"Response received from media service: 400","service":"api-gateway","timestamp":"2026-05-06T19:20:45.821Z"}
+{"level":"info","message":"Received POST request to /v1/media/upload","service":"api-gateway","timestamp":"2026-05-06T19:22:30.141Z"}
+{"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-06T19:22:30.142Z"}
+{"level":"info","message":"Response received from media service: 400","service":"api-gateway","timestamp":"2026-05-06T19:22:30.461Z"}
+{"level":"info","message":"Received POST request to /v1/media/upload","service":"api-gateway","timestamp":"2026-05-06T19:22:45.631Z"}
+{"level":"info","message":"Request body, [object Object]","service":"api-gateway","timestamp":"2026-05-06T19:22:45.633Z"}
+{"level":"info","message":"Response received from media service: 201","service":"api-gateway","timestamp":"2026-05-06T19:22:48.909Z"}
