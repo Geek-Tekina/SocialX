@@ -17,3 +17,79 @@
 {"level":"info","message":"File details: name=tble.png, type=image/png","service":"media-service","timestamp":"2026-05-06T19:22:45.905Z"}
 {"level":"info","message":"Uploading to cloudinary starting...","service":"media-service","timestamp":"2026-05-06T19:22:45.908Z"}
 {"level":"info","message":"Cloudinary upload successfully. Public Id: - xputapke21ahb5o2gzsy","service":"media-service","timestamp":"2026-05-06T19:22:48.800Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-12T17:48:54.301Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-12T17:48:54.475Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-12T17:49:10.710Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-12T17:49:11.066Z"}
+{"level":"info","message":"Subscribed to event: post.deleted","service":"media-service","timestamp":"2026-05-12T17:49:11.620Z"}
+{"level":"info","message":"Media service running on port 3003","service":"media-service","timestamp":"2026-05-12T17:49:11.636Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-12T17:51:47.183Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-12T17:51:47.291Z"}
+{"level":"info","message":"Subscribed to event: post.deleted","service":"media-service","timestamp":"2026-05-12T17:51:47.496Z"}
+{"level":"info","message":"Media service running on port 3003","service":"media-service","timestamp":"2026-05-12T17:51:47.506Z"}
+{"level":"info","message":"Received POST request to /api/media/upload","service":"media-service","timestamp":"2026-05-12T17:53:56.955Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T17:53:56.957Z"}
+{"level":"info","message":"Starting media upload","service":"media-service","timestamp":"2026-05-12T17:53:57.525Z"}
+{"level":"info","message":"File details: name=tble.png, type=image/png","service":"media-service","timestamp":"2026-05-12T17:53:57.539Z"}
+{"level":"info","message":"Uploading to cloudinary starting...","service":"media-service","timestamp":"2026-05-12T17:53:57.541Z"}
+{"level":"info","message":"Cloudinary upload successfully. Public Id: - uhqhluhlljv9lprjapdw","service":"media-service","timestamp":"2026-05-12T17:54:01.013Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:00:45.355Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:00:45.357Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:02:45.363Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:02:45.365Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:03:37.092Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:03:37.093Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:09:25.452Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:09:25.463Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:10:14.050Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:10:14.051Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:10:59.461Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:10:59.462Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:11:26.990Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:11:26.990Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:12:37.194Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:12:37.196Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:13:44.791Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:13:44.792Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-12T18:16:15.570Z"}
+{"level":"info","message":"Subscribed to event: post.deleted","service":"media-service","timestamp":"2026-05-12T18:16:15.700Z"}
+{"level":"info","message":"Media service running on port 3003","service":"media-service","timestamp":"2026-05-12T18:16:15.713Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-12T18:16:15.884Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:19:32.430Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:19:32.432Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:21:33.407Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:21:33.409Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:23:39.085Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:23:39.088Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:25:24.254Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:25:24.256Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:26:39.660Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:26:39.662Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-12T18:27:56.641Z"}
+{"level":"info","message":"Subscribed to event: post.deleted","service":"media-service","timestamp":"2026-05-12T18:27:56.693Z"}
+{"level":"info","message":"Media service running on port 3003","service":"media-service","timestamp":"2026-05-12T18:27:56.703Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-12T18:27:56.832Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:28:01.460Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:28:01.462Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-12T18:28:57.309Z"}
+{"level":"info","message":"Subscribed to event: post.deleted","service":"media-service","timestamp":"2026-05-12T18:28:57.394Z"}
+{"level":"info","message":"Media service running on port 3003","service":"media-service","timestamp":"2026-05-12T18:28:57.404Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-12T18:28:57.617Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:29:13.408Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:29:13.410Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-12T18:30:33.997Z"}
+{"level":"info","message":"Subscribed to event: post.deleted","service":"media-service","timestamp":"2026-05-12T18:30:34.129Z"}
+{"level":"info","message":"Media service running on port 3003","service":"media-service","timestamp":"2026-05-12T18:30:34.141Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-12T18:30:34.320Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-12T18:30:37.105Z"}
+{"level":"info","message":"Subscribed to event: post.deleted","service":"media-service","timestamp":"2026-05-12T18:30:37.137Z"}
+{"level":"info","message":"Media service running on port 3003","service":"media-service","timestamp":"2026-05-12T18:30:37.152Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-12T18:30:37.433Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:30:55.919Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:30:55.921Z"}
+{"0":"u","1":"h","10":"v","11":"9","12":"l","13":"p","14":"r","15":"j","16":"a","17":"p","18":"d","19":"w","2":"q","3":"h","4":"l","5":"u","6":"h","7":"l","8":"l","9":"j","level":"info","message":"Media deleted successfuly from cloud stroage","service":"media-service","timestamp":"2026-05-12T18:33:46.808Z"}
+{"level":"info","message":"Deleted media 6a036939f83a73f8ba8a1593 associated with this deleted post 6a0369b678491ca727d16516","service":"media-service","timestamp":"2026-05-12T18:33:46.852Z"}
+{"level":"info","message":"Processed deletion of media for post id 6a0369b678491ca727d16516","service":"media-service","timestamp":"2026-05-12T18:33:46.855Z"}
+{"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:34:52.336Z"}
+{"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:34:52.337Z"}
+{"level":"info","message":"Processed deletion of media for post id 69f63e3a143351f127491d7c","service":"media-service","timestamp":"2026-05-12T18:36:46.558Z"}

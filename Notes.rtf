@@ -2,3 +2,43 @@
 
 1. Auth - registration and sign In / Off
 2. Auth and refresh tokens
+
+1. Start RabbitMQ Server
+
+Open Command Prompt as Administrator.
+
+Go to RabbitMQ sbin folder if not already added to PATH:
+
+cd "C:\Program Files\RabbitMQ Server\rabbitmq_server-<version>\sbin"
+
+Then run:
+
+rabbitmq-service start
+
+After that check:
+
+rabbitmqctl status
+
+If working, you should see server status details.
+
+2. Open Management Dashboard
+
+In browser:
+
+http://localhost:15672
+
+Login:
+
+guest
+guest
+
+If the page opens, RabbitMQ is running correctly.
+
+3. Then use this connection string in Node.js
+amqp://guest:guest@localhost:5672
+
+NOT:
+
+amqp://rabbitmq:5672
+
+because you are not using Docker.
