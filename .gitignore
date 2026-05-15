@@ -9,3 +9,14 @@ media-service/.env
 media-service/node_modules
 search-service/.env
 search-service/node_modules
+
+identity-service/error.log
+identity-service/combined.log
+api-gateway/error.log
+api-gateway/combined.log
+post-service/combined.log
+post-service/error.log
+media-service/error.log
+media-service/combined.log
+search-service/error.log
+search-service/combined.log

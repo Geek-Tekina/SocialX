@@ -93,3 +93,8 @@
 {"level":"info","message":"Received GET request to /api/media/get","service":"media-service","timestamp":"2026-05-12T18:34:52.336Z"}
 {"level":"info","message":"Request body, undefined","service":"media-service","timestamp":"2026-05-12T18:34:52.337Z"}
 {"level":"info","message":"Processed deletion of media for post id 69f63e3a143351f127491d7c","service":"media-service","timestamp":"2026-05-12T18:36:46.558Z"}
+{"level":"info","message":"Connected to rabbit mq","service":"media-service","timestamp":"2026-05-15T17:42:20.011Z"}
+{"level":"info","message":"Subscribed to event: post.deleted","service":"media-service","timestamp":"2026-05-15T17:42:20.085Z"}
+{"level":"info","message":"Media service running on port 3003","service":"media-service","timestamp":"2026-05-15T17:42:20.092Z"}
+{"level":"info","message":"Connected to mongodb","service":"media-service","timestamp":"2026-05-15T17:42:20.295Z"}
+{"level":"info","message":"Processed deletion of media for post id 6a075b9ff2306a79413cb67e","service":"media-service","timestamp":"2026-05-15T17:46:28.095Z"}
