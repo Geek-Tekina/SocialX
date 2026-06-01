@@ -17,7 +17,7 @@ const resgiterUser = async (req, res) => {
         message: error.details[0].message,
       });
     }
-    const { email, password, username } = req.body;
+    const { email, password, username, avatar } = req.body;
 
     let user = await User.findOne({ $or: [{ email }, { username }] });
     if (user) {
@@ -28,7 +28,7 @@ const resgiterUser = async (req, res) => {
       });
     }
 
-    user = new User({ username, email, password });
+    user = new User({ username, email, password, avatar });
     await user.save();
     logger.warn("User saved successfully", user._id);
 
@@ -39,6 +39,9 @@ const resgiterUser = async (req, res) => {
       message: "User registered successfully!",
       accessToken,
       refreshToken,
+      userId: user._id,
+      username: user.username,
+      avatar: user.avatar,
     });
   } catch (e) {
     logger.error("Registration error occured", e);
@@ -88,6 +91,8 @@ const loginUser = async (req, res) => {
       accessToken,
       refreshToken,
       userId: user._id,
+      username: user.username,
+      avatar: user.avatar || "nova",
     });
   } catch (e) {
     logger.error("Login error occured", e);

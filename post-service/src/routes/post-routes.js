@@ -4,6 +4,8 @@ const {
   getAllPosts,
   getPost,
   deletePost,
+  toggleLikePost,
+  addComment,
 } = require("../controllers/post-controller");
 const { authenticateRequest } = require("../middleware/authMiddleware");
 
@@ -14,6 +16,8 @@ router.use(authenticateRequest);
 
 router.post("/create-post", createPost);
 router.get("/all-posts", getAllPosts);
+router.patch("/:id/like", toggleLikePost);
+router.post("/:id/comments", addComment);
 router.get("/:id", getPost);
 router.delete("/:id", deletePost);
 

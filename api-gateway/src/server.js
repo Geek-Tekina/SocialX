@@ -34,7 +34,7 @@ const ratelimitOptions = rateLimit({
   }),
 });
 
-app.use(ratelimitOptions);
+// app.use(ratelimitOptions);
 
 app.use((req, res, next) => {
   logger.info(`Received ${req.method} request to ${req.url}`);
@@ -104,7 +104,8 @@ app.use(
     ...proxyOptions,
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
       proxyReqOpts.headers["x-user-id"] = srcReq.user.userId;
-      if (!srcReq.headers["content-type"].startsWith("multipart/form-data")) {
+      const contentType = srcReq.headers["content-type"] || "";
+      if (!contentType.startsWith("multipart/form-data")) {
         proxyReqOpts.headers["Content-Type"] = "application/json";
       }
 

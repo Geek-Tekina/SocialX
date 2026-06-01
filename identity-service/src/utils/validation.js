@@ -5,6 +5,9 @@ const validateRegistration = (data) => {
     username: Joi.string().min(3).max(50).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
+    avatar: Joi.string()
+      .valid("nova", "pulse", "bloom", "ember", "mint", "slate")
+      .default("nova"),
   });
 
   return schema.validate(data);

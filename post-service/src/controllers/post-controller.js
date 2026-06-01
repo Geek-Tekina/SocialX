@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+require("../models/User"); // register User model so populate() works
 const logger = require("../utils/logger");
 const { publishEvent } = require("../utils/rabbitmq");
 const { validateCreatePost } = require("../utils/validation");
@@ -48,7 +49,7 @@ const createPost = async (req, res) => {
       message: "Post created successfully",
     });
   } catch (e) {
-    logger.error("Error creating post", error);
+    logger.error("Error creating post", e);
     res.status(500).json({
       success: false,
       message: "Error creating post",
@@ -70,6 +71,8 @@ const getAllPosts = async (req, res) => {
     }
 
     const posts = await Post.find({})
+      .populate("user", "username avatar")
+      .populate("comments.user", "username avatar")
       .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(limit);
@@ -88,7 +91,7 @@ const getAllPosts = async (req, res) => {
 
     res.json(result);
   } catch (e) {
-    logger.error("Error fetching posts", error);
+    logger.error("Error fetching posts", e);
     res.status(500).json({
       success: false,
       message: "Error fetching posts",
@@ -99,14 +102,16 @@ const getAllPosts = async (req, res) => {
 const getPost = async (req, res) => {
   try {
     const postId = req.params.id;
-    const cachekey = `post:${postId}`;
-    const cachedPost = await req.redisClient.get(cachekey);
+    const cacheKey = `post:${postId}`;
+    const cachedPost = await req.redisClient.get(cacheKey);
 
     if (cachedPost) {
       return res.json(JSON.parse(cachedPost));
     }
 
-    const singlePostDetailsbyId = await Post.findById(postId);
+    const singlePostDetailsbyId = await Post.findById(postId)
+      .populate("user", "username avatar")
+      .populate("comments.user", "username avatar");
 
     if (!singlePostDetailsbyId) {
       return res.status(404).json({
@@ -116,17 +121,98 @@ const getPost = async (req, res) => {
     }
 
     await req.redisClient.setex(
-      cachedPost,
+      cacheKey,
       3600,
       JSON.stringify(singlePostDetailsbyId)
     );
 
     res.json(singlePostDetailsbyId);
   } catch (e) {
-    logger.error("Error fetching post", error);
+    logger.error("Error fetching post", e);
     res.status(500).json({
       success: false,
       message: "Error fetching post by ID",
+    });
+  }
+};
+
+const toggleLikePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+        success: false,
+      });
+    }
+
+    const userId = req.user.userId;
+    const alreadyLiked = post.likes.some(
+      (likedUserId) => likedUserId.toString() === userId
+    );
+
+    if (alreadyLiked) {
+      post.likes = post.likes.filter(
+        (likedUserId) => likedUserId.toString() !== userId
+      );
+    } else {
+      post.likes.push(userId);
+    }
+
+    await post.save();
+    await invalidatePostCache(req, req.params.id);
+
+    res.json({
+      success: true,
+      liked: !alreadyLiked,
+      likesCount: post.likes.length,
+      likes: post.likes,
+    });
+  } catch (e) {
+    logger.error("Error toggling post like", e);
+    res.status(500).json({
+      success: false,
+      message: "Error toggling post like",
+    });
+  }
+};
+
+const addComment = async (req, res) => {
+  try {
+    const content = (req.body.content || "").trim();
+    if (content.length < 1 || content.length > 500) {
+      return res.status(400).json({
+        success: false,
+        message: "Comment must be between 1 and 500 characters",
+      });
+    }
+
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    post.comments.push({ user: req.user.userId, content });
+    await post.save();
+    await invalidatePostCache(req, req.params.id);
+
+    const updatedPost = await Post.findById(req.params.id)
+      .populate("user", "username avatar")
+      .populate("comments.user", "username avatar");
+
+    res.status(201).json({
+      success: true,
+      comments: updatedPost.comments,
+    });
+  } catch (e) {
+    logger.error("Error adding comment", e);
+    res.status(500).json({
+      success: false,
+      message: "Error adding comment",
     });
   }
 };
@@ -156,7 +242,7 @@ const deletePost = async (req, res) => {
       message: "Post deleted successfully",
     });
   } catch (e) {
-    logger.error("Error deleting post", error);
+    logger.error("Error deleting post", e);
     res.status(500).json({
       success: false,
       message: "Error deleting post",
@@ -164,4 +250,4 @@ const deletePost = async (req, res) => {
   }
 };
 
-module.exports = { createPost, getAllPosts, getPost, deletePost };
+module.exports = { createPost, getAllPosts, getPost, deletePost, toggleLikePost, addComment };

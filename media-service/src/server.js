@@ -27,9 +27,7 @@ app.use((req, res, next) => {
   logger.info(`Request body, ${req.body}`);
   next();
 });
-
-//*** Homework - implement Ip based rate limiting for sensitive endpoints
-
+s;
 app.use("/api/media", mediaRoutes);
 
 app.use(errorHandler);

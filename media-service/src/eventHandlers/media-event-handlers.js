@@ -3,23 +3,31 @@ const { deleteMediaFromCloudinary } = require("../utils/cloudinary");
 const logger = require("../utils/logger");
 
 const handlePostDeleted = async (event) => {
-  console.log(event, "Event Event Event !!!");
-  const { postId, mediaIds } = event;
+  const { postId, mediaIds = [] } = event;
   try {
+    if (!mediaIds.length) {
+      logger.info(`No media found for deleted post ${postId}`);
+      return;
+    }
+
     const mediaToDelete = await Media.find({ _id: { $in: mediaIds } });
 
     for (const media of mediaToDelete) {
-      await deleteMediaFromCloudinary(media.publicId);
-      await Media.findByIdAndDelete(media._id);
+      try {
+        await deleteMediaFromCloudinary(media.publicId);
+        await Media.findByIdAndDelete(media._id);
 
-      logger.info(
-        `Deleted media ${media._id} associated with this deleted post ${postId}`
-      );
+        logger.info(
+          `Deleted media ${media._id} associated with this deleted post ${postId}`
+        );
+      } catch (e) {
+        logger.error(e, `Error deleting media ${media._id} for post ${postId}`);
+      }
     }
 
     logger.info(`Processed deletion of media for post id ${postId}`);
   } catch (e) {
-    logger.error(e, "Error occured while media deletion");
+    logger.error(e, "Error occurred while media deletion");
   }
 };
 

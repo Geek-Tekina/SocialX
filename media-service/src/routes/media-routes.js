@@ -4,6 +4,8 @@ const multer = require("multer");
 const {
   uploadMedia,
   getAllMedias,
+  deleteMedia,
+  getMediaByIds,
 } = require("../controllers/media-controller");
 const { authenticateRequest } = require("../middleware/authMiddleware");
 const logger = require("../utils/logger");
@@ -52,5 +54,7 @@ router.post(
 );
 
 router.get("/get", authenticateRequest, getAllMedias);
+router.get("/resolve", authenticateRequest, getMediaByIds);
+router.delete("/:id", authenticateRequest, deleteMedia);
 
 module.exports = router;
