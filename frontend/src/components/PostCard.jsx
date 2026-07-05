@@ -130,6 +130,7 @@ const PostCard = ({ post, onDelete, loading = false, mediaMap = {} }) => {
             <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5, mb: 1.5 }}>
               <UserAvatar
                 avatar={post?.user?.avatar}
+                profileImageUrl={post?.user?.profileImageUrl}
                 username={post?.user?.username}
                 sx={{ width: 38, height: 38, fontSize: 14, fontWeight: 700, bgcolor: theme.palette.primary.main }}
               />

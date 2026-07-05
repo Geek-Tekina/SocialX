@@ -8,6 +8,7 @@ const generateTokens = async (user) => {
       userId: user._id,
       username: user.username,
       avatar: user.avatar || "nova",
+      profileImageUrl: user.profileImageUrl || null,
     },
     process.env.JWT_SECRET,
     { expiresIn: "60m" }

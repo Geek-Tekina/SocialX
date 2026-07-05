@@ -21,4 +21,13 @@ const validatelogin = (data) => {
 
   return schema.validate(data);
 };
-module.exports = { validateRegistration, validatelogin };
+
+const validateGoogleAuth = (data) => {
+  const schema = Joi.object({
+    credential: Joi.string().min(20).required(),
+  });
+
+  return schema.validate(data);
+};
+
+module.exports = { validateRegistration, validatelogin, validateGoogleAuth };

@@ -152,6 +152,7 @@ const PostDetailPage = () => {
             <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2, mb: 3 }}>
               <UserAvatar
                 avatar={post?.user?.avatar}
+                profileImageUrl={post?.user?.profileImageUrl}
                 username={post?.user?.username}
                 sx={{ width: 48, height: 48, fontWeight: 700, fontSize: 18, bgcolor: theme.palette.primary.main }}
               />
@@ -264,7 +265,7 @@ const PostDetailPage = () => {
             <Box sx={{ display: "grid", gap: 1.25 }}>
               {comments.map((comment) => (
                 <Box key={comment._id || `${comment.user?._id}-${comment.createdAt}`} sx={{ display: "flex", gap: 1.25 }}>
-                  <UserAvatar avatar={comment.user?.avatar} username={comment.user?.username} sx={{ width: 32, height: 32 }} />
+                  <UserAvatar avatar={comment.user?.avatar} profileImageUrl={comment.user?.profileImageUrl} username={comment.user?.username} sx={{ width: 32, height: 32 }} />
                   <Box sx={{ minWidth: 0 }}>
                     <Box sx={{ display: "flex", gap: 1, alignItems: "baseline", flexWrap: "wrap" }}>
                       <Typography variant="body2" fontWeight={700}>{comment.user?.username || "User"}</Typography>

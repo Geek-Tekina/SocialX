@@ -17,14 +17,21 @@ const searchPostController = async (req, res) => {
 
     // Resolve userIds to usernames in one batch query
     const userIds = [...new Set(results.map((r) => r.userId))];
-    const users = await User.find({ _id: { $in: userIds } }, "username avatar");
+    const users = await User.find({ _id: { $in: userIds } }, "username avatar profileImageUrl");
     const userMap = {};
-    users.forEach((u) => { userMap[u._id.toString()] = { username: u.username, avatar: u.avatar }; });
+    users.forEach((u) => {
+      userMap[u._id.toString()] = {
+        username: u.username,
+        avatar: u.avatar,
+        profileImageUrl: u.profileImageUrl || null,
+      };
+    });
 
     const enriched = results.map((r) => ({
       ...r.toObject(),
       username: userMap[r.userId]?.username || null,
       avatar: userMap[r.userId]?.avatar || "nova",
+      profileImageUrl: userMap[r.userId]?.profileImageUrl || null,
     }));
 
     res.json(enriched);

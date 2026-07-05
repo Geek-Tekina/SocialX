@@ -18,11 +18,31 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.googleId;
+      },
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: true,
+    },
+    profileImageUrl: {
+      type: String,
+      default: null,
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false,
     },
     avatar: {
       type: String,
       default: "nova",
+    },
+    lastLoginAt: {
+      type: Date,
+      default: null,
     },
     createdAt: {
       type: Date,
@@ -35,7 +55,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
+  if (this.password && this.isModified("password")) {
     try {
       this.password = await argon2.hash(this.password);
     } catch (error) {
@@ -45,6 +65,9 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!this.password || !candidatePassword) {
+    return false;
+  }
   try {
     return await argon2.verify(this.password, candidatePassword);
   } catch (error) {

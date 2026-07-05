@@ -7,23 +7,24 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { loginUser } from "../api/authApi";
+import { loginUser, googleAuth } from "../api/authApi";
 import { useAuth } from "../context/AuthContext";
 import { useAppTheme } from "../context/ThemeContext";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 import toast from "react-hot-toast";
 
 const getAuthPalette = (theme, mode) => {
   const isDark = mode === "dark";
   return {
-    panelBg: isDark ? "#0A0C10" : "#F7F8FA",
-    formBg: isDark ? "#0F1117" : "#FFFFFF",
-    cardBg: isDark ? "#161B24" : "#F9FAFB",
+    panelBg: isDark ? "#050507" : "#F7F8FA",
+    formBg: isDark ? "#090A0D" : "#FFFFFF",
+    cardBg: isDark ? "#111215" : "#F9FAFB",
     border: isDark ? "rgba(255,255,255,0.08)" : "rgba(17,24,39,0.1)",
     accent: theme.palette.primary.main,
     accentHov: theme.palette.primary.dark || theme.palette.primary.main,
     textPri: isDark ? "#F0F2F5" : "#111827",
-    textSec: isDark ? "#8B95A5" : "#6B7280",
-    textDis: isDark ? "#4A5260" : "#9CA3AF",
+    textSec: isDark ? "#C7CFDB" : "#6B7280",
+    textDis: isDark ? "#A9B4C0" : "#9CA3AF",
     error: "#EF4444",
   };
 };
@@ -63,6 +64,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -84,6 +86,29 @@ const LoginPage = () => {
       setServerError(err.response?.data?.message || "Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async (credential) => {
+    if (googleLoading) return;
+    setServerError("");
+    setGoogleLoading(true);
+    try {
+      const { data } = await googleAuth(credential);
+      login({
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        userId: data.userId,
+        username: data.username,
+        avatar: data.avatar,
+        profileImageUrl: data.profileImageUrl,
+      });
+      toast.success("Welcome back!");
+      navigate("/feed");
+    } catch (err) {
+      setServerError(err.response?.data?.message || "Google sign-in failed. Please try again.");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -144,7 +169,7 @@ const LoginPage = () => {
               transition={{ delay: 0.3 + i * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             >
               <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5, mb: 1.75 }}>
-                <Typography sx={{ color: AUTH.accent, fontWeight: 700, fontSize: 14, mt: 0.1 }}>{f.icon}</Typography>
+                <Typography sx={{ color: AUTH.textPri, fontWeight: 700, fontSize: 14, mt: 0.1 }}>{f.icon}</Typography>
                 <Typography sx={{ color: AUTH.textSec, fontSize: 14, lineHeight: 1.5 }}>{f.text}</Typography>
               </Box>
             </motion.div>
@@ -172,11 +197,11 @@ const LoginPage = () => {
       }}>
         <Orb auth={AUTH} size={400} style={{ top: "-20%", right: "-10%" }} delay={1.5} />
 
-        <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          style={{ width: "100%", maxWidth: 400, position: "relative", zIndex: 1 }}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            style={{ width: "100%", maxWidth: 400, position: "relative", zIndex: 1 }}
         >
           {/* Mobile logo */}
           <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", gap: 1.25, mb: 4 }}>
@@ -195,7 +220,7 @@ const LoginPage = () => {
           <IconButton
             onClick={toggleMode}
             size="small"
-            sx={{ position: "absolute", top: 0, right: 0, color: AUTH.textSec, border: `1px solid ${AUTH.border}` }}
+            sx={{ position: "absolute", top: 0, right: 0, color: AUTH.textPri, border: `1px solid ${AUTH.border}` }}
           >
             {mode === "dark" ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
           </IconButton>
@@ -248,7 +273,7 @@ const LoginPage = () => {
                       <IconButton
                         onClick={() => setShowPassword((s) => !s)}
                         edge="end" size="small"
-                        sx={{ color: AUTH.textSec }}
+                        sx={{ color: AUTH.textPri }}
                       >
                         {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
                       </IconButton>
@@ -289,13 +314,26 @@ const LoginPage = () => {
             </motion.div>
           </form>
 
+          <Box sx={{ my: 3 }}>
+            <GoogleAuthButton
+              action="signin"
+              onCredential={handleGoogleSignIn}
+              onError={() => setServerError("Google sign-in failed. Please try again.")}
+            />
+            {googleLoading && (
+              <Typography variant="caption" sx={{ display: "block", mt: 1, color: AUTH.textSec }}>
+                Completing Google sign-in...
+              </Typography>
+            )}
+          </Box>
+
           <Box sx={{ mt: 3, textAlign: "center" }}>
             <Typography sx={{ fontSize: 13, color: AUTH.textSec }}>
               Don&apos;t have an account?{" "}
               <Link
                 component={RouterLink}
                 to="/register"
-                sx={{ color: AUTH.accent, fontWeight: 600, textDecoration: "none", "&:hover": { textDecoration: "underline" } }}
+                sx={{ color: AUTH.textPri, fontWeight: 700, textDecoration: "none", "&:hover": { textDecoration: "underline" } }}
               >
                 Create one free
               </Link>

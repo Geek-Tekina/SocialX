@@ -75,7 +75,12 @@ const SearchPage = () => {
   const mappedResults = results.map((r) => ({
     _id: r.postId,
     content: r.content,
-    user: { _id: r.userId, username: r.username || null, avatar: r.avatar || "nova" },
+    user: {
+      _id: r.userId,
+      username: r.username || null,
+      avatar: r.avatar || "nova",
+      profileImageUrl: r.profileImageUrl || null,
+    },
     createdAt: r.createdAt,
     mediaIds: [],
   }));

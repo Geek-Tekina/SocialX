@@ -27,7 +27,6 @@ app.use((req, res, next) => {
   logger.info(`Request body, ${req.body}`);
   next();
 });
-s;
 app.use("/api/media", mediaRoutes);
 
 app.use(errorHandler);

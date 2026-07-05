@@ -140,7 +140,7 @@ const CreatePostModal = ({ open, onClose, onPostCreated }) => {
     >
       <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", pb: 1, px: { xs: 2, sm: 3 } }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-          <UserAvatar avatar={auth?.avatar} username={auth?.username} sx={{ width: 38, height: 38 }} />
+          <UserAvatar avatar={auth?.avatar} profileImageUrl={auth?.profileImageUrl} username={auth?.username} sx={{ width: 38, height: 38 }} />
           <Box>
             <Typography variant="h6" fontWeight={700}>Create Post</Typography>
             <Typography variant="caption" color="text.secondary">{auth?.username || "User"}</Typography>
@@ -289,7 +289,7 @@ const CreatePostModal = ({ open, onClose, onPostCreated }) => {
                 Preview
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, mb: 1.5 }}>
-                <UserAvatar avatar={auth?.avatar} username={auth?.username} sx={{ width: 34, height: 34 }} />
+          <UserAvatar avatar={auth?.avatar} profileImageUrl={auth?.profileImageUrl} username={auth?.username} sx={{ width: 34, height: 34 }} />
                 <Box>
                   <Typography variant="body2" fontWeight={700}>{auth?.username || "User"}</Typography>
                   <Typography variant="caption" color="text.secondary">Now</Typography>

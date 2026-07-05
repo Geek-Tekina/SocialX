@@ -42,7 +42,7 @@ const StatRow = ({ icon, label, value, loading }) => (
 // WHY: Reducing friction to post is the #1 engagement driver in social apps.
 //      Twitter/Threads put compose at the top of every feed for this reason.
 //      The expansion animation signals "this is interactive" before the user clicks.
-const QuickCompose = ({ username, avatar, onOpen }) => {
+const QuickCompose = ({ username, avatar, profileImageUrl, onOpen }) => {
   const theme = useTheme();
 
   return (
@@ -54,6 +54,7 @@ const QuickCompose = ({ username, avatar, onOpen }) => {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
           <UserAvatar
             avatar={avatar}
+            profileImageUrl={profileImageUrl}
             username={username}
             sx={{ width: 36, height: 36, fontSize: 14, fontWeight: 700, bgcolor: theme.palette.primary.main }}
           />
@@ -250,6 +251,7 @@ const FeedPage = () => {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                 <UserAvatar
                   avatar={auth?.avatar}
+                  profileImageUrl={auth?.profileImageUrl}
                   username={auth?.username}
                   pulse
                   ringColor={theme.palette.primary.main}
@@ -283,7 +285,7 @@ const FeedPage = () => {
           </motion.div>
 
           {/* Quick compose */}
-          <QuickCompose username={auth?.username} avatar={auth?.avatar} onOpen={() => setModalOpen(true)} />
+          <QuickCompose username={auth?.username} avatar={auth?.avatar} profileImageUrl={auth?.profileImageUrl} onOpen={() => setModalOpen(true)} />
 
           {/* Feed header */}
           <motion.div variants={itemVariants}>

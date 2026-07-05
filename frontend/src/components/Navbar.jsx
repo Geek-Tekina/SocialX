@@ -12,7 +12,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { useAppTheme } from "../context/ThemeContext";
-import { themes } from "../theme/theme";
 import { springs } from "../motion/variants";
 import UserAvatar from "./UserAvatar";
 import toast from "react-hot-toast";
@@ -27,14 +26,13 @@ const NAV_ITEMS = [
 
 const Navbar = () => {
   const { auth, logout } = useAuth();
-  const { colorKey, mode, setColor, toggleMode } = useAppTheme();
+  const { mode, toggleMode } = useAppTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [anchorEl, setAnchorEl]           = useState(null);
-  const [paletteAnchor, setPaletteAnchor] = useState(null);
   const [drawerOpen, setDrawerOpen]       = useState(false);
 
   const handleLogout = async () => {
@@ -94,7 +92,7 @@ const Navbar = () => {
                       position: "relative",
                       display: "flex", alignItems: "center", gap: 0.75,
                       px: 1.5, py: 0.875, borderRadius: 1.5, cursor: "pointer",
-                      color: active ? "primary.main" : "text.secondary",
+                      color: active ? "text.primary" : "text.secondary",
                       transition: "color 0.15s",
                       "&:hover": { color: "text.primary" },
                       zIndex: 0,
@@ -108,7 +106,7 @@ const Navbar = () => {
                         style={{
                           position: "absolute", inset: 0,
                           borderRadius: 6,
-                          backgroundColor: `${theme.palette.primary.main}14`,
+                          backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
                           zIndex: -1,
                         }}
                       />
@@ -125,37 +123,11 @@ const Navbar = () => {
 
           <Box sx={{ flex: isMobile ? 1 : 0 }} />
 
-          {/* ── Accent dot ── */}
-          <Tooltip title="Accent color">
-            <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }} transition={springs.snappy}>
-              <IconButton onClick={(e) => setPaletteAnchor(e.currentTarget)} size="small" sx={{ mr: 0.5 }}>
-                <Box sx={{
-                  width: 14, height: 14, borderRadius: "50%",
-                  bgcolor: theme.palette.primary.main,
-                  border: "2px solid",
-                  borderColor: isDark ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.1)",
-                }} />
-              </IconButton>
-            </motion.div>
-          </Tooltip>
-
           {/* ── Dark/Light toggle ── */}
           <Tooltip title={isDark ? "Light mode" : "Dark mode"}>
-            <motion.div whileTap={{ rotate: 180 }} transition={{ duration: 0.3 }}>
-              <IconButton onClick={toggleMode} size="small" sx={{ mr: 0.75, color: "text.secondary" }}>
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={isDark ? "light" : "dark"}
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {isDark ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
-                  </motion.div>
-                </AnimatePresence>
-              </IconButton>
-            </motion.div>
+            <IconButton onClick={toggleMode} size="small" sx={{ mr: 0.75, color: "text.secondary" }}>
+              {isDark ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
+            </IconButton>
           </Tooltip>
 
           {/* ── Avatar ── */}
@@ -163,6 +135,7 @@ const Navbar = () => {
             <Box onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ cursor: "pointer" }}>
               <UserAvatar
                 avatar={auth?.avatar}
+                profileImageUrl={auth?.profileImageUrl}
                 username={auth?.username}
                 sx={{ width: 32, height: 32, fontSize: 13, fontWeight: 700, bgcolor: theme.palette.primary.main }}
               />
@@ -178,67 +151,6 @@ const Navbar = () => {
           )}
         </Toolbar>
       </AppBar>
-
-      {/* ── Accent color picker ── */}
-      <Menu
-        anchorEl={paletteAnchor}
-        open={Boolean(paletteAnchor)}
-        onClose={() => setPaletteAnchor(null)}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        PaperProps={{
-          sx: {
-            mt: 0.75, minWidth: 196, borderRadius: 2,
-            border: "1px solid", borderColor: "divider",
-            boxShadow: isDark ? "0 12px 40px rgba(0,0,0,0.6)" : "0 8px 32px rgba(0,0,0,0.1)",
-            overflow: "hidden", p: 0,
-          },
-        }}
-      >
-        <Box sx={{ px: 2, pt: 1.75, pb: 0.75 }}>
-          <Typography variant="caption" fontWeight={700} color="text.secondary"
-            sx={{ textTransform: "uppercase", letterSpacing: "0.07em", fontSize: 10 }}>
-            Accent Color
-          </Typography>
-        </Box>
-        {Object.entries(themes).map(([key, t]) => {
-          const isActive = colorKey === key;
-          return (
-            <motion.div key={key} whileHover={{ x: 2 }} transition={springs.snappy}>
-              <Box
-                onClick={() => { setColor(key); setPaletteAnchor(null); }}
-                sx={{
-                  display: "flex", alignItems: "center", gap: 1.5,
-                  px: 2, py: 0.875, cursor: "pointer",
-                  bgcolor: isActive ? "action.selected" : "transparent",
-                  "&:hover": { bgcolor: "action.hover" },
-                  transition: "background 0.12s",
-                }}
-              >
-                <Box sx={{ width: 13, height: 13, borderRadius: "50%", bgcolor: t.primary, flexShrink: 0 }} />
-                <Typography variant="body2" fontWeight={isActive ? 600 : 400}>{t.label}</Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ ml: "auto", fontSize: 10 }}>{t.mood}</Typography>
-              </Box>
-            </motion.div>
-          );
-        })}
-        <Divider />
-        <Box
-          onClick={toggleMode}
-          sx={{
-            display: "flex", alignItems: "center", gap: 1.5,
-            px: 2, py: 1.125, cursor: "pointer",
-            "&:hover": { bgcolor: "action.hover" }, transition: "background 0.12s",
-          }}
-        >
-          {isDark
-            ? <LightMode fontSize="small" sx={{ color: "text.secondary" }} />
-            : <DarkMode fontSize="small" sx={{ color: "text.secondary" }} />}
-          <Typography variant="body2" color="text.secondary">
-            {isDark ? "Light mode" : "Dark mode"}
-          </Typography>
-        </Box>
-      </Menu>
 
       {/* ── User dropdown ── */}
       <Menu
@@ -278,7 +190,7 @@ const Navbar = () => {
         </Box>
         <Box sx={{ px: 2, py: 1, mb: 0.5 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-            <UserAvatar avatar={auth?.avatar} username={auth?.username} sx={{ width: 36, height: 36, fontWeight: 700, fontSize: 14 }} />
+            <UserAvatar avatar={auth?.avatar} profileImageUrl={auth?.profileImageUrl} username={auth?.username} sx={{ width: 36, height: 36, fontWeight: 700, fontSize: 14 }} />
             <Box>
               <Typography variant="subtitle2" fontWeight={700}>{auth?.username || "User"}</Typography>
               <Typography variant="caption" color="text.secondary">Signed in</Typography>
@@ -291,10 +203,10 @@ const Navbar = () => {
             const active = location.pathname === item.path;
             return (
               <ListItem key={item.path} disablePadding>
-                <ListItemButton selected={active}
+              <ListItemButton selected={active}
                   onClick={() => { navigate(item.path); setDrawerOpen(false); }}
                   sx={{ borderRadius: 1.5, my: 0.25 }}>
-                  <ListItemIcon sx={{ minWidth: 32, color: active ? "primary.main" : "text.secondary" }}>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ minWidth: 32, color: active ? "text.primary" : "text.secondary" }}>{item.icon}</ListItemIcon>
                   <ListItemText primary={<Typography variant="body2" fontWeight={active ? 600 : 400}>{item.label}</Typography>} />
                 </ListItemButton>
               </ListItem>

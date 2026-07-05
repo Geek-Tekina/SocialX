@@ -20,7 +20,10 @@ export const AuthProvider = ({ children }) => {
     const userId = localStorage.getItem("userId");
     const username = localStorage.getItem("username");
     const avatar = localStorage.getItem("avatar");
-    return accessToken ? { accessToken, refreshToken, userId, username, avatar } : null;
+    const profileImageUrl = localStorage.getItem("profileImageUrl");
+    return accessToken
+      ? { accessToken, refreshToken, userId, username, avatar, profileImageUrl }
+      : null;
   });
 
   const login = useCallback((data) => {
@@ -30,14 +33,17 @@ export const AuthProvider = ({ children }) => {
     const userId = data.userId || claims.userId || null;
     const username = data.username || claims.username || null;
     const avatar = data.avatar || claims.avatar || "nova";
+    const profileImageUrl = data.profileImageUrl || claims.profileImageUrl || null;
 
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
     if (userId) localStorage.setItem("userId", userId);
     if (username) localStorage.setItem("username", username);
     localStorage.setItem("avatar", avatar);
+    if (profileImageUrl) localStorage.setItem("profileImageUrl", profileImageUrl);
+    else localStorage.removeItem("profileImageUrl");
 
-    setAuth({ accessToken, refreshToken, userId, username, avatar });
+    setAuth({ accessToken, refreshToken, userId, username, avatar, profileImageUrl });
   }, []);
 
   const logout = useCallback(async () => {

@@ -71,8 +71,8 @@ const getAllPosts = async (req, res) => {
     }
 
     const posts = await Post.find({})
-      .populate("user", "username avatar")
-      .populate("comments.user", "username avatar")
+      .populate("user", "username avatar profileImageUrl")
+      .populate("comments.user", "username avatar profileImageUrl")
       .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(limit);
@@ -110,8 +110,8 @@ const getPost = async (req, res) => {
     }
 
     const singlePostDetailsbyId = await Post.findById(postId)
-      .populate("user", "username avatar")
-      .populate("comments.user", "username avatar");
+      .populate("user", "username avatar profileImageUrl")
+      .populate("comments.user", "username avatar profileImageUrl");
 
     if (!singlePostDetailsbyId) {
       return res.status(404).json({
@@ -201,8 +201,8 @@ const addComment = async (req, res) => {
     await invalidatePostCache(req, req.params.id);
 
     const updatedPost = await Post.findById(req.params.id)
-      .populate("user", "username avatar")
-      .populate("comments.user", "username avatar");
+      .populate("user", "username avatar profileImageUrl")
+      .populate("comments.user", "username avatar profileImageUrl");
 
     res.status(201).json({
       success: true,

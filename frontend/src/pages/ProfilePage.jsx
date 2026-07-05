@@ -74,7 +74,7 @@ const ProfilePage = () => {
     <Box>
       <Paper elevation={0} sx={{ p: { xs: 2.5, md: 3 }, border: "1px solid", borderColor: "divider", borderRadius: 2, mb: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
-          <UserAvatar avatar={auth?.avatar} username={auth?.username} pulse sx={{ width: 72, height: 72 }} />
+          <UserAvatar avatar={auth?.avatar} profileImageUrl={auth?.profileImageUrl} username={auth?.username} pulse sx={{ width: 72, height: 72 }} />
           <Box sx={{ flex: 1, minWidth: 220 }}>
             <Typography variant="h5" fontWeight={800}>{auth?.username || "User"}</Typography>
             <Typography variant="body2" color="text.secondary">Your SocialX profile</Typography>
