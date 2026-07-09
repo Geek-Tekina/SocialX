@@ -10,6 +10,7 @@ const { rateLimit } = require("express-rate-limit");
 const { RedisStore } = require("rate-limit-redis");
 const routes = require("./routes/identity-service");
 const errorHandler = require("./middleware/errorHandler");
+const { requestLogger } = require("./utils/safeLog");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -27,11 +28,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-  logger.info(`Received ${req.method} request to ${req.url}`);
-  logger.info(`Request body, ${req.body}`);
-  next();
-});
+app.use(requestLogger(logger));
 
 //DDos protection and rate limiting
 const rateLimiter = new RateLimiterRedis({

@@ -6,7 +6,14 @@ const logger = require("../utils/logger");
 const searchPostController = async (req, res) => {
   logger.info("Search endpoint hit!");
   try {
-    const { query } = req.query;
+    const query = (req.query.query || "").trim();
+
+    if (!query || query.length < 2 || query.length > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Search query must be between 2 and 100 characters",
+      });
+    }
 
     const results = await Search.find(
       { $text: { $search: query } },

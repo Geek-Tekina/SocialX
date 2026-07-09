@@ -1,8 +1,18 @@
 const Post = require("../models/Post");
 require("../models/User"); // register User model so populate() works
+const mongoose = require("mongoose");
 const logger = require("../utils/logger");
 const { publishEvent } = require("../utils/rabbitmq");
 const { validateCreatePost } = require("../utils/validation");
+const { safeJson } = require("../utils/safeLog");
+
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const sendInvalidPostId = (res) =>
+  res.status(400).json({
+    success: false,
+    message: "Invalid post id",
+  });
 
 async function invalidatePostCache(req, input) {
   const cachedKey = `post:${input}`;
@@ -43,7 +53,13 @@ const createPost = async (req, res) => {
     });
 
     await invalidatePostCache(req, newlyCreatedPost._id.toString());
-    logger.info("Post created successfully", newlyCreatedPost);
+    logger.info(
+      `Post created successfully ${safeJson({
+        postId: newlyCreatedPost._id,
+        userId: newlyCreatedPost.user,
+        mediaIds: newlyCreatedPost.mediaIds,
+      })}`
+    );
     res.status(201).json({
       success: true,
       message: "Post created successfully",
@@ -59,8 +75,16 @@ const createPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+
+    if (page < 1 || limit < 1 || limit > 50) {
+      return res.status(400).json({
+        success: false,
+        message: "Page must be at least 1 and limit must be between 1 and 50",
+      });
+    }
+
     const startIndex = (page - 1) * limit;
 
     const cacheKey = `posts:${page}:${limit}`;
@@ -102,6 +126,10 @@ const getAllPosts = async (req, res) => {
 const getPost = async (req, res) => {
   try {
     const postId = req.params.id;
+    if (!isValidObjectId(postId)) {
+      return sendInvalidPostId(res);
+    }
+
     const cacheKey = `post:${postId}`;
     const cachedPost = await req.redisClient.get(cacheKey);
 
@@ -138,6 +166,10 @@ const getPost = async (req, res) => {
 
 const toggleLikePost = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return sendInvalidPostId(res);
+    }
+
     const post = await Post.findById(req.params.id);
 
     if (!post) {
@@ -180,6 +212,10 @@ const toggleLikePost = async (req, res) => {
 
 const addComment = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return sendInvalidPostId(res);
+    }
+
     const content = (req.body.content || "").trim();
     if (content.length < 1 || content.length > 500) {
       return res.status(400).json({
@@ -219,6 +255,10 @@ const addComment = async (req, res) => {
 
 const deletePost = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return sendInvalidPostId(res);
+    }
+
     const post = await Post.findOneAndDelete({
       _id: req.params.id,
       user: req.user.userId,

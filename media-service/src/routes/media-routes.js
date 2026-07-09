@@ -27,22 +27,24 @@ router.post(
     upload(req, res, function (err) {
       if (err instanceof multer.MulterError) {
         logger.error("Multer error while uploading:", err);
-        return res.status(400).json({
-          message: "Multer error while uploading:",
+        const statusCode = err.code === "LIMIT_FILE_SIZE" ? 413 : 400;
+        return res.status(statusCode).json({
+          success: false,
+          message: err.code === "LIMIT_FILE_SIZE" ? "File size exceeds 5MB limit" : "Multer error while uploading",
           error: err.message,
-          stack: err.stack,
         });
       } else if (err) {
         logger.error("Unknown error occured while uploading:", err);
         return res.status(500).json({
-          message: "Unknown error occured while uploading:",
+          success: false,
+          message: "Unknown error occured while uploading",
           error: err.message,
-          stack: err.stack,
         });
       }
 
       if (!req.file) {
         return res.status(400).json({
+          success: false,
           message: "No file found!",
         });
       }

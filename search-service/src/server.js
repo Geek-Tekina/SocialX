@@ -8,6 +8,7 @@ const errorHandler = require("./middleware/errorHandler");
 const logger = require("./utils/logger");
 const { connectToRabbitMQ, consumeEvent } = require("./utils/rabbitmq");
 const searchRoutes = require("./routes/search-routes");
+const { requestLogger } = require("./utils/safeLog");
 const {
   handlePostCreated,
   handlePostDeleted,
@@ -29,11 +30,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-  logger.info(`Received ${req.method} request to ${req.url}`);
-  logger.info(`Request body, ${req.body}`);
-  next();
-});
+app.use(requestLogger(logger));
 
 //*** Homework - implement Ip based rate limiting for sensitive endpoints
 

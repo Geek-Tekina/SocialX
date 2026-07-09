@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
 const { RedisStore } = require("rate-limit-redis");
 const logger = require("./utils/logger");
+const { requestLogger } = require("./utils/safeLog");
 const proxy = require("express-http-proxy");
 const errorHandler = require("./middleware/errorhandler");
 const { validateToken } = require("./middleware/authMiddleware");
@@ -34,13 +35,9 @@ const ratelimitOptions = rateLimit({
   }),
 });
 
-// app.use(ratelimitOptions);
+app.use(ratelimitOptions);
 
-app.use((req, res, next) => {
-  logger.info(`Received ${req.method} request to ${req.url}`);
-  logger.info(`Request body, ${req.body}`);
-  next();
-});
+app.use(requestLogger(logger));
 
 const proxyOptions = {
   proxyReqPathResolver: (req) => {
@@ -48,8 +45,9 @@ const proxyOptions = {
   },
   proxyErrorHandler: (err, res, next) => {
     logger.error(`Proxy error: ${err.message}`);
-    res.status(500).json({
-      message: `Internal server error`,
+    res.status(502).json({
+      success: false,
+      message: `Bad gateway`,
       error: err.message,
     });
   },

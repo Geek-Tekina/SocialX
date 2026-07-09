@@ -1,6 +1,15 @@
 const Media = require("../models/Media");
+const mongoose = require("mongoose");
 const { uploadMediaToCloudinary, deleteMediaFromCloudinary } = require("../utils/cloudinary");
 const logger = require("../utils/logger");
+
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+const sendInvalidMediaId = (res) =>
+  res.status(400).json({
+    success: false,
+    message: "Invalid media id",
+  });
 
 const uploadMedia = async (req, res) => {
   logger.info("Starting media upload");
@@ -34,9 +43,6 @@ const uploadMedia = async (req, res) => {
 const getAllMedias = async (req, res) => {
   try {
     const result = await Media.find({ userId: req.user.userId });
-    if (result.length === 0) {
-      return res.status(404).json({ success: false, message: "Can't find any media for this user" });
-    }
     return res.status(200).json({ success: true, result });
   } catch (e) {
     logger.error("Error fetching medias", e);
@@ -46,6 +52,10 @@ const getAllMedias = async (req, res) => {
 
 const deleteMedia = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return sendInvalidMediaId(res);
+    }
+
     const media = await Media.findOne({ _id: req.params.id, userId: req.user.userId });
     if (!media) {
       return res.status(404).json({ success: false, message: "Media not found" });
@@ -64,6 +74,10 @@ const getMediaByIds = async (req, res) => {
     const { ids } = req.query;
     if (!ids) return res.status(400).json({ success: false, message: "ids query param required" });
     const idList = ids.split(",").map((s) => s.trim()).filter(Boolean);
+    if (!idList.length || idList.some((id) => !isValidObjectId(id))) {
+      return res.status(400).json({ success: false, message: "ids query param contains invalid media id" });
+    }
+
     const result = await Media.find({ _id: { $in: idList } }, "url mimeType originalName");
     const map = {};
     result.forEach((m) => { map[m._id.toString()] = { url: m.url, mimeType: m.mimeType, originalName: m.originalName }; });

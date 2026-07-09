@@ -66,7 +66,7 @@ const resgiterUser = async (req, res) => {
     let user = await User.findOne({ $or: [{ email }, { username }] });
     if (user) {
       logger.warn("User already exists");
-      return res.status(400).json({
+      return res.status(409).json({
         success: false,
         message: "User already exists",
       });
@@ -75,7 +75,7 @@ const resgiterUser = async (req, res) => {
     user = new User({ username, email, password, avatar });
     user.lastLoginAt = new Date();
     await user.save();
-    logger.warn("User saved successfully", user._id);
+    logger.info(`User registered successfully: ${user._id}`);
 
     const response = await buildAuthResponse(user, "User registered successfully!");
     res.status(201).json(response);
@@ -105,7 +105,7 @@ const loginUser = async (req, res) => {
 
     if (!user) {
       logger.warn("Invalid user");
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid credentials",
       });
@@ -113,7 +113,7 @@ const loginUser = async (req, res) => {
 
     if (!user.password) {
       logger.warn("Password login attempted for Google-only account");
-      return res.status(400).json({
+      return res.status(409).json({
         success: false,
         message: "This account uses Google Sign-In. Please continue with Google.",
       });
@@ -123,9 +123,9 @@ const loginUser = async (req, res) => {
     const isValidPassword = await user.comparePassword(password);
     if (!isValidPassword) {
       logger.warn("Invalid password");
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
-        message: "Invalid password",
+        message: "Invalid credentials",
       });
     }
 
@@ -249,7 +249,7 @@ const refreshTokenUser = async (req, res) => {
 
     if (!storedToken) {
       logger.warn("Invalid refresh token provided");
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid refresh token",
       });
@@ -313,7 +313,7 @@ const logoutUser = async (req, res) => {
     });
     if (!storedToken) {
       logger.warn("Invalid refresh token provided");
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid refresh token",
       });
