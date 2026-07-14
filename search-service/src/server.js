@@ -31,10 +31,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use(requestLogger(logger));
-
-//*** Homework - implement Ip based rate limiting for sensitive endpoints
-
-//*** Homework - pass redis client as part of your req and then implement redis caching
 app.use("/api/search", searchRoutes);
 
 app.use(errorHandler);

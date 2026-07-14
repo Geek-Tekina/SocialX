@@ -27,7 +27,6 @@ async function invalidatePostCache(req, input) {
 const createPost = async (req, res) => {
   logger.info("Create post endpoint hit");
   try {
-    //validate the schema
     const { error } = validateCreatePost(req.body);
     if (error) {
       logger.warn("Validation error", error.details[0].message);
@@ -290,4 +289,11 @@ const deletePost = async (req, res) => {
   }
 };
 
-module.exports = { createPost, getAllPosts, getPost, deletePost, toggleLikePost, addComment };
+module.exports = {
+  createPost,
+  getAllPosts,
+  getPost,
+  deletePost,
+  toggleLikePost,
+  addComment,
+};

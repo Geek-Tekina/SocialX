@@ -4,8 +4,8 @@ const logger = require("./logger");
 let connection = null;
 let channel = null;
 
-const EXCHANGE_NAME = "facebook_events";
-
+const EXCHANGE_NAME = "socialx.events";
+const QUEUE_NAME = "search-service.post";
 async function connectToRabbitMQ() {
   try {
     connection = await amqp.connect(process.env.RABBITMQ_URL);
@@ -24,8 +24,8 @@ async function consumeEvent(routingKey, callback) {
     await connectToRabbitMQ();
   }
 
-  const q = await channel.assertQueue("", { exclusive: true });
-  await channel.bindQueue(q.queue, EXCHANGE_NAME, routingKey);
+  const q = await channel.assertQueue(QUEUE_NAME, { durable: true });
+  await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, routingKey);
   channel.consume(q.queue, (msg) => {
     if (msg !== null) {
       const content = JSON.parse(msg.content.toString());

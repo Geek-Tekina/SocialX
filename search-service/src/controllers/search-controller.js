@@ -2,7 +2,6 @@ const Search = require("../models/Search");
 const User = require("../models/User");
 const logger = require("../utils/logger");
 
-//implement caching here for 2 to 5 min
 const searchPostController = async (req, res) => {
   logger.info("Search endpoint hit!");
   try {
@@ -22,9 +21,11 @@ const searchPostController = async (req, res) => {
       .sort({ score: { $meta: "textScore" } })
       .limit(10);
 
-    // Resolve userIds to usernames in one batch query
     const userIds = [...new Set(results.map((r) => r.userId))];
-    const users = await User.find({ _id: { $in: userIds } }, "username avatar profileImageUrl");
+    const users = await User.find(
+      { _id: { $in: userIds } },
+      "username avatar profileImageUrl"
+    );
     const userMap = {};
     users.forEach((u) => {
       userMap[u._id.toString()] = {

@@ -32,7 +32,6 @@ async function startServer() {
   try {
     await connectToRabbitMQ();
 
-    //consume all the events
     await consumeEvent("post.deleted", handlePostDeleted);
 
     app.listen(PORT, () => {
