@@ -12,7 +12,7 @@ async function connectToRabbitMQ() {
     connection = await amqp.connect(process.env.RABBITMQ_URL);
     channel = await connection.createChannel();
 
-    await channel.assertExchange(EXCHANGE_NAME, "topic", { durable: false });
+    await channel.assertExchange(EXCHANGE_NAME, "topic", { durable: true });
     logger.info("Connected to rabbit mq");
     return channel;
   } catch (e) {
