@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import {
   DynamicFeed, PhotoLibrary, Search, Logout,
-  Menu as MenuIcon, Close, Article, DarkMode, LightMode, AccountCircle,
+  Menu as MenuIcon, Close, Article, DarkMode, LightMode, AccountCircle, People,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,10 +14,12 @@ import { useAuth } from "../context/AuthContext";
 import { useAppTheme } from "../context/ThemeContext";
 import { springs } from "../motion/variants";
 import UserAvatar from "./UserAvatar";
+import NotificationBell from "./NotificationBell";
 import toast from "react-hot-toast";
 
 const NAV_ITEMS = [
   { label: "Feed",     icon: <DynamicFeed fontSize="small" />, path: "/feed" },
+  { label: "Friends",  icon: <People fontSize="small" />,      path: "/friends" },
   { label: "Profile",  icon: <AccountCircle fontSize="small" />, path: "/profile" },
   { label: "My Posts", icon: <Article fontSize="small" />,     path: "/my-posts" },
   { label: "My Media", icon: <PhotoLibrary fontSize="small" />, path: "/media" },
@@ -122,6 +124,8 @@ const Navbar = () => {
           )}
 
           <Box sx={{ flex: isMobile ? 1 : 0 }} />
+
+          <NotificationBell />
 
           {/* ── Dark/Light toggle ── */}
           <Tooltip title={isDark ? "Light mode" : "Dark mode"}>

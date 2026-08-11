@@ -1,0 +1,25 @@
+{
+  "name": "friend-service",
+  "version": "1.0.0",
+  "description": "Friend request service for Social X",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "amqplib": "^2.0.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "joi": "^18.1.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.1",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

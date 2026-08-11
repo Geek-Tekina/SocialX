@@ -22,7 +22,8 @@
     "react-dom": "^19.2.6",
     "react-hook-form": "^7.76.1",
     "react-hot-toast": "^2.6.0",
-    "react-router-dom": "^7.15.1"
+    "react-router-dom": "^7.15.1",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

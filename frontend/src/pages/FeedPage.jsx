@@ -1,9 +1,9 @@
 import {
   Box, Typography, Button, CircularProgress, Alert,
-  Fab, Chip, Divider, Paper, useTheme, useMediaQuery, Skeleton,
+  Fab, Chip, Divider, Paper, useTheme, useMediaQuery, Skeleton, Tabs, Tab,
 } from "@mui/material";
-import { Add, Refresh, EditNote, TrendingUp, Article, PhotoLibrary, Search as SearchIcon } from "@mui/icons-material";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { Add, Refresh, EditNote, TrendingUp, Article, PhotoLibrary, Search as SearchIcon, Group } from "@mui/icons-material";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { getAllPosts, deletePost } from "../api/postApi";
@@ -14,6 +14,7 @@ import UserAvatar from "../components/UserAvatar";
 import NewsInlineCard from "../components/NewsInlineCard";
 import { useAuth } from "../context/AuthContext";
 import { getRelevantNews } from "../api/newsApi";
+import { getFriends } from "../api/friendApi";
 import { listVariants, itemVariants, fadeIn, scalePop, springs } from "../motion/variants";
 import { normalizeMediaMap } from "../utils/mediaUtils";
 import toast from "react-hot-toast";
@@ -94,7 +95,7 @@ const QuickCompose = ({ username, avatar, profileImageUrl, onOpen }) => {
 };
 
 // ── Sidebar ───────────────────────────────────────────────────────────────────
-const Sidebar = ({ totalPosts, mediaCount, loading, onNavigate }) => (
+const Sidebar = ({ totalPosts, mediaCount, friendsCount, loading, onNavigate }) => (
   <motion.div variants={fadeIn} initial="hidden" animate="visible">
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       <Paper elevation={0} sx={{ p: 2.5, border: "1px solid", borderColor: "divider", borderRadius: 2 }}>
@@ -103,6 +104,8 @@ const Sidebar = ({ totalPosts, mediaCount, loading, onNavigate }) => (
           Community
         </Typography>
         <StatRow icon={<Article sx={{ fontSize: 15 }} />} label="Total posts" value={totalPosts} loading={loading} />
+        <Divider sx={{ my: 0.5 }} />
+        <StatRow icon={<Group sx={{ fontSize: 15 }} />} label="Friends" value={friendsCount} loading={loading} />
         <Divider sx={{ my: 0.5 }} />
         <StatRow icon={<PhotoLibrary sx={{ fontSize: 15 }} />} label="Your media" value={mediaCount} loading={loading} />
       </Paper>
@@ -114,6 +117,7 @@ const Sidebar = ({ totalPosts, mediaCount, loading, onNavigate }) => (
         </Typography>
         {[
           { label: "My Posts",  icon: <Article sx={{ fontSize: 15 }} />,     path: "/my-posts" },
+          { label: "Friends",   icon: <Group sx={{ fontSize: 15 }} />,       path: "/friends" },
           { label: "My Media",  icon: <PhotoLibrary sx={{ fontSize: 15 }} />, path: "/media" },
           { label: "Search",    icon: <SearchIcon sx={{ fontSize: 15 }} />,   path: "/search" },
         ].map((item) => (
@@ -157,7 +161,22 @@ const FeedPage = () => {
   const [mediaMap, setMediaMap] = useState({});
   const [mediaCount, setMediaCount] = useState(0);
   const [newsItems, setNewsItems] = useState([]);
+  const [feedView, setFeedView] = useState("all");
+  const [friends, setFriends] = useState([]);
   const loadMoreRef = useRef(null);
+
+  const friendIds = useMemo(
+    () => new Set(friends.map((friend) => String(friend.friendUserId))),
+    [friends]
+  );
+
+  const visiblePosts = useMemo(() => {
+    if (feedView === "all") return posts;
+    return posts.filter((post) => {
+      const authorId = String(post?.user?._id || post?.user || "");
+      return authorId === auth?.userId || friendIds.has(authorId);
+    });
+  }, [auth?.userId, feedView, friendIds, posts]);
 
   const fetchMediaMap = useCallback(async () => {
     try {
@@ -204,7 +223,16 @@ const FeedPage = () => {
     }
   }, []);
 
-  useEffect(() => { fetchMediaMap(); fetchNews(); }, [fetchMediaMap, fetchNews]);
+  const fetchFriends = useCallback(async () => {
+    try {
+      const { data } = await getFriends();
+      setFriends(data.friends || []);
+    } catch {
+      setFriends([]);
+    }
+  }, []);
+
+  useEffect(() => { fetchMediaMap(); fetchNews(); fetchFriends(); }, [fetchMediaMap, fetchNews, fetchFriends]);
   useEffect(() => { fetchPosts(page, { append: page > 1 }); }, [page, fetchPosts]);
 
   useEffect(() => {
@@ -273,6 +301,7 @@ const FeedPage = () => {
                   startIcon={refreshing ? <CircularProgress size={13} /> : <Refresh />}
                   onClick={() => {
                     fetchMediaMap();
+                    fetchFriends();
                     if (page === 1) fetchPosts(1, { silent: true });
                     else setPage(1);
                   }}
@@ -307,6 +336,31 @@ const FeedPage = () => {
                 </Typography>
               )}
             </Box>
+
+            <Paper elevation={0} sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, mb: 2 }}>
+              <Tabs
+                value={feedView}
+                onChange={(_, value) => setFeedView(value)}
+                variant="fullWidth"
+                textColor="inherit"
+                TabIndicatorProps={{ sx: { height: 2, borderRadius: 999 } }}
+                sx={{
+                  minHeight: 54,
+                  "& .MuiTab-root": {
+                    minHeight: 54,
+                    color: "text.secondary",
+                    fontWeight: 700,
+                  },
+                  "& .MuiTab-root.Mui-selected": {
+                    color: "text.primary",
+                  },
+                }}
+              >
+                <Tab value="friends" icon={<Group fontSize="small" />} iconPosition="start" label="Friends" />
+                <Tab value="all" icon={<TrendingUp fontSize="small" />} iconPosition="start" label="All users" />
+              </Tabs>
+            </Paper>
+
             <Divider sx={{ mb: 2.5 }} />
           </motion.div>
         </motion.div>
@@ -331,7 +385,7 @@ const FeedPage = () => {
 
         {/* Empty state */}
         <AnimatePresence>
-          {!loading && !error && posts.length === 0 && (
+          {!loading && !error && visiblePosts.length === 0 && (
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -340,13 +394,15 @@ const FeedPage = () => {
             >
               <Box sx={{ textAlign: "center", py: 10 }}>
                 <Article sx={{ fontSize: 52, color: "text.disabled", mb: 1.5 }} />
-                <Typography variant="h6" color="text.secondary" gutterBottom>Nothing here yet</Typography>
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                  {feedView === "friends" ? "No friend posts yet" : "Nothing here yet"}
+                </Typography>
                 <Typography variant="body2" color="text.disabled" sx={{ mb: 2.5 }}>
-                  Be the first to share something with the community
+                  {feedView === "friends" ? "Add friends to build a more personal feed" : "Be the first to share something with the community"}
                 </Typography>
                 <motion.div whileTap={{ scale: 0.97 }} transition={springs.snappy}>
-                  <Button variant="contained" startIcon={<Add />} onClick={() => setModalOpen(true)}>
-                    Create First Post
+                  <Button variant="contained" startIcon={feedView === "friends" ? <Group /> : <Add />} onClick={() => feedView === "friends" ? navigate("/friends") : setModalOpen(true)}>
+                    {feedView === "friends" ? "Find Friends" : "Create First Post"}
                   </Button>
                 </motion.div>
               </Box>
@@ -356,14 +412,14 @@ const FeedPage = () => {
 
         {/* Posts */}
         <AnimatePresence mode="wait">
-          {!loading && posts.length > 0 && (
+          {!loading && visiblePosts.length > 0 && (
             <motion.div
-              key="feed-posts"
+              key={`feed-posts-${feedView}`}
               variants={listVariants}
               initial="hidden"
               animate="visible"
             >
-              {posts.map((post, index) => (
+              {visiblePosts.map((post, index) => (
                 <motion.div key={post._id} variants={itemVariants}>
                   <PostCard post={post} onDelete={handleDelete} mediaMap={mediaMap} />
                   {(index + 1) % 4 === 0 && newsItems[Math.floor(index / 4)] && (
@@ -403,7 +459,7 @@ const FeedPage = () => {
       {/* ── Sidebar ── */}
       {isWide && (
         <Box sx={{ width: 256, flexShrink: 0 }}>
-          <Sidebar totalPosts={totalPosts} mediaCount={mediaCount} loading={loading} onNavigate={navigate} />
+          <Sidebar totalPosts={totalPosts} mediaCount={mediaCount} friendsCount={friends.length} loading={loading} onNavigate={navigate} />
         </Box>
       )}
 
@@ -425,6 +481,7 @@ const FeedPage = () => {
         onClose={() => setModalOpen(false)}
         onPostCreated={() => {
           fetchMediaMap();
+          fetchFriends();
           if (page === 1) fetchPosts(1, { silent: true });
           else setPage(1);
         }}

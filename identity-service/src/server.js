@@ -43,7 +43,7 @@ const rateLimiter = new RateLimiterRedis({
 //Ip based rate limiting for sensitive endpoints
 const sensitiveEndpointsLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 50,
+  max: 50000,
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res) => {

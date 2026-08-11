@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { MotionConfig } from "framer-motion";
 import { AppThemeProvider, useAppTheme } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import DashboardLayout from "./pages/DashboardLayout";
@@ -15,6 +16,7 @@ import SearchPage from "./pages/SearchPage";
 import MyPostsPage from "./pages/MyPostsPage";
 import ProfilePage from "./pages/ProfilePage";
 import PostDetailPage from "./pages/PostDetailPage";
+import FriendsPage from "./pages/FriendsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AppErrorBoundary from "./components/AppErrorBoundary";
 
@@ -45,6 +47,7 @@ const AppInner = () => (
     <CssBaseline />
     <ToasterWrapper />
     <AuthProvider>
+      <NotificationProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/feed" replace />} />
@@ -55,6 +58,7 @@ const AppInner = () => (
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/feed"     element={<FeedPage />} />
+              <Route path="/friends"  element={<FriendsPage />} />
               <Route path="/media"    element={<MediaPage />} />
               <Route path="/search"   element={<SearchPage />} />
               <Route path="/profile"  element={<ProfilePage />} />
@@ -65,6 +69,7 @@ const AppInner = () => (
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
+      </NotificationProvider>
     </AuthProvider>
   </>
 );

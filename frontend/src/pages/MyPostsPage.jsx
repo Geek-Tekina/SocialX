@@ -13,6 +13,7 @@ import { normalizeMediaMap } from "../utils/mediaUtils";
 import toast from "react-hot-toast";
 
 const POSTS_PER_PAGE = 10;
+const BACKEND_MAX_POST_LIMIT = 50;
 
 const MyPostsPage = () => {
   const { auth } = useAuth();
@@ -40,8 +41,19 @@ const MyPostsPage = () => {
     else setRefreshing(true);
     setError("");
     try {
-      const { data } = await getAllPosts(1, 100);
-      const all = data.posts || [];
+      const collected = [];
+      let currentPage = 1;
+      let hasMore = true;
+
+      while (hasMore) {
+        const { data } = await getAllPosts(currentPage, BACKEND_MAX_POST_LIMIT);
+        const batch = data.posts || [];
+        collected.push(...batch);
+        hasMore = batch.length === BACKEND_MAX_POST_LIMIT && currentPage < 10;
+        currentPage += 1;
+      }
+
+      const all = collected;
       const mine = all.filter((p) => p.user?._id === auth?.userId || p.user === auth?.userId);
       setAllPosts(mine);
       const start = (pageNum - 1) * POSTS_PER_PAGE;
