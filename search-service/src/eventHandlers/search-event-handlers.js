@@ -3,19 +3,24 @@ const logger = require("../utils/logger");
 
 async function handlePostCreated(event) {
   try {
-    const newSearchPost = new Search({
-      postId: event.postId,
-      userId: event.userId,
-      content: event.content,
-      createdAt: event.createdAt,
-    });
+    const newSearchPost = await Search.findOneAndUpdate(
+      { postId: event.postId },
+      {
+        $set: {
+          userId: event.userId,
+          content: event.content,
+          createdAt: event.createdAt,
+        },
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
 
-    await newSearchPost.save();
     logger.info(
       `Search post created: ${event.postId}, ${newSearchPost._id.toString()}`
     );
   } catch (e) {
     logger.error(e, "Error handling post creation event");
+    throw e;
   }
 }
 
@@ -25,6 +30,7 @@ async function handlePostDeleted(event) {
     logger.info(`Search post deleted: ${event.postId}`);
   } catch (error) {
     logger.error(error, "Error handling post deletion event");
+    throw error;
   }
 }
 

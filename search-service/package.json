@@ -9,6 +9,7 @@
     "start": "node src/server.js"
   },
   "dependencies": {
+    "@upstash/redis": "^1.38.2",
     "amqplib": "^0.10.5",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

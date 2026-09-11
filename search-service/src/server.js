@@ -1,18 +1,19 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const Redis = require("ioredis");
 const cors = require("cors");
 const helmet = require("helmet");
 const errorHandler = require("./middleware/errorHandler");
 const logger = require("./utils/logger");
 const { connectToRabbitMQ, consumeEvent } = require("./utils/rabbitmq");
 const searchRoutes = require("./routes/search-routes");
+const Search = require("./models/Search");
 const { requestLogger } = require("./utils/safeLog");
 const {
   handlePostCreated,
   handlePostDeleted,
 } = require("./eventHandlers/search-event-handlers");
+const { initializeRedisClient } = require("./config/redisConfig");
 
 const app = express();
 const PORT = process.env.PORT || 3004;
@@ -20,10 +21,20 @@ const PORT = process.env.PORT || 3004;
 //connect to mongodb
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => logger.info("Connected to mongodb"))
+  .then(async () => {
+    logger.info("Connected to mongodb");
+
+    try {
+      await Search.createIndexes();
+      logger.info("Ensured MongoDB search text index exists");
+    } catch (e) {
+      logger.error("Failed to ensure search text index", e);
+    }
+  })
   .catch((e) => logger.error("Mongo connection error", e));
 
-const redisClient = new Redis(process.env.REDIS_URL);
+// Initialize Redis client (supports both local and Upstash)
+const redisClient = initializeRedisClient();
 
 //middleware
 app.use(helmet());

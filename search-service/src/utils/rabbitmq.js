@@ -8,14 +8,30 @@ const EXCHANGE_NAME = "socialx.events";
 const QUEUE_NAME = "search-service.post";
 async function connectToRabbitMQ() {
   try {
-    connection = await amqp.connect(process.env.RABBITMQ_URL);
+    connection = await amqp.connect(process.env.RABBITMQ_URL, { family: 4 });
     channel = await connection.createChannel();
 
+    connection.on("error", (error) => {
+      logger.error("RabbitMQ connection error", error);
+    });
+
+    connection.on("close", () => {
+      logger.warn("RabbitMQ connection closed");
+      connection = null;
+      channel = null;
+    });
+
+    channel.on("error", (error) => {
+      logger.error("RabbitMQ channel error", error);
+    });
+
     await channel.assertExchange(EXCHANGE_NAME, "topic", { durable: true });
+    await channel.prefetch(1);
     logger.info("Connected to rabbit mq");
     return channel;
   } catch (e) {
     logger.error("Error connecting to rabbit mq", e);
+    throw e;
   }
 }
 
@@ -26,11 +42,20 @@ async function consumeEvent(routingKey, callback) {
 
   const q = await channel.assertQueue(QUEUE_NAME, { durable: true });
   await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, routingKey);
-  channel.consume(q.queue, (msg) => {
-    if (msg !== null) {
+
+  channel.consume(q.queue, async (msg) => {
+    if (!msg) {
+      return;
+    }
+
+    try {
       const content = JSON.parse(msg.content.toString());
-      callback(content);
+      await callback(content);
       channel.ack(msg);
+    } catch (error) {
+      logger.error(`Error processing RabbitMQ event: ${routingKey}`, error);
+      const shouldRequeue = !(error instanceof SyntaxError);
+      channel.nack(msg, false, shouldRequeue);
     }
   });
 

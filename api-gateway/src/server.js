@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const Redis = require("ioredis");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
 const { RedisStore } = require("rate-limit-redis");
@@ -10,11 +9,13 @@ const { requestLogger } = require("./utils/safeLog");
 const proxy = require("express-http-proxy");
 const errorHandler = require("./middleware/errorhandler");
 const { validateToken } = require("./middleware/authMiddleware");
+const { initializeRedisClient } = require("./config/redisConfig");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const redisClient = new Redis(process.env.REDIS_URL);
+// Initialize Redis client (supports both local and Upstash)
+const redisClient = initializeRedisClient();
 
 app.use(helmet());
 app.use(cors());
@@ -44,11 +45,15 @@ const proxyOptions = {
     return req.originalUrl.replace(/^\/v1/, "/api");
   },
   proxyErrorHandler: (err, res, next) => {
-    logger.error(`Proxy error: ${err.message}`);
+    logger.error(
+      `Proxy error: ${err.message} | Code: ${err.code} | Full error:`,
+      err
+    );
     res.status(502).json({
       success: false,
       message: `Bad gateway`,
-      error: err.message,
+      error: err.message || "Unknown error",
+      code: err.code,
     });
   },
 };

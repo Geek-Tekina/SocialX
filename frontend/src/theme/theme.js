@@ -7,7 +7,7 @@ const LIGHT = {
   textSec: "#6B7280",
   divider: "#E5E7EB",
   cardBorder: "#E5E7EB",
-  cardShadow: "0 1px 4px rgba(0,0,0,0.06)",
+  cardShadow: "0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06)",
 };
 
 const DARK = {
@@ -77,18 +77,23 @@ export const buildTheme = (mode = "light") => {
           containedPrimary: {
             backgroundColor: primaryMain,
             color: "#ffffff",
+            backgroundImage: isDark
+              ? "none"
+              : "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
             "&:hover": {
               backgroundColor: primaryHover,
               filter: "brightness(1.06)",
-              boxShadow: "none",
+              boxShadow: isDark ? "none" : "0 8px 16px rgba(17, 24, 39, 0.15)",
             },
           },
           outlined: {
-            borderColor: neutralBorder,
+            borderColor: isDark ? neutralBorder : "rgba(59, 130, 246, 0.2)",
             color: n.textPri,
             "&:hover": {
-              borderColor: neutralBorder,
-              backgroundColor: neutralHover,
+              borderColor: isDark ? neutralBorder : "rgba(59, 130, 246, 0.4)",
+              backgroundColor: isDark
+                ? neutralHover
+                : "rgba(59, 130, 246, 0.05)",
               boxShadow: "none",
             },
           },
@@ -115,14 +120,32 @@ export const buildTheme = (mode = "light") => {
           root: {
             borderRadius: 12,
             boxShadow: n.cardShadow,
-            border: `1px solid ${n.cardBorder}`,
-            backgroundColor: n.paper,
+            border: isDark
+              ? `1px solid ${n.cardBorder}`
+              : "1px solid rgba(59, 130, 246, 0.15)",
+            backgroundColor: isDark ? n.paper : "#FFFFFF",
+            backgroundImage: isDark
+              ? "none"
+              : "linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, rgba(139, 92, 246, 0.02) 100%)",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            "&:hover": {
+              borderColor: isDark ? n.cardBorder : "rgba(59, 130, 246, 0.25)",
+              boxShadow: isDark
+                ? n.cardShadow
+                : "0 8px 24px rgba(59, 130, 246, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06)",
+            },
           },
         },
       },
       MuiPaper: {
         styleOverrides: {
-          root: { backgroundImage: "none", backgroundColor: n.paper },
+          root: {
+            backgroundImage: isDark
+              ? "none"
+              : "linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(139, 92, 246, 0.01) 100%)",
+            backgroundColor: isDark ? n.paper : "#FFFFFF",
+            borderColor: isDark ? n.cardBorder : "rgba(59, 130, 246, 0.1)",
+          },
         },
       },
       MuiAppBar: {
@@ -132,14 +155,22 @@ export const buildTheme = (mode = "light") => {
         styleOverrides: {
           root: {
             borderRadius: 7,
-            backgroundColor: inputBg,
-            "& .MuiOutlinedInput-notchedOutline": { borderColor: neutralBorder },
+            backgroundColor: isDark ? inputBg : "#FFFFFF",
+            backgroundImage: isDark
+              ? "none"
+              : "linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, transparent 100%)",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: isDark ? neutralBorder : "rgba(59, 130, 246, 0.2)",
+            },
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: isDark ? "rgba(255,255,255,0.25)" : "#9CA3AF",
+              borderColor: isDark
+                ? "rgba(255,255,255,0.25)"
+                : "rgba(59, 130, 246, 0.35)",
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: primaryMain,
               borderWidth: 1.5,
+              boxShadow: isDark ? "none" : "0 0 0 3px rgba(59, 130, 246, 0.1)",
             },
           },
         },
@@ -153,13 +184,20 @@ export const buildTheme = (mode = "light") => {
         styleOverrides: {
           root: {
             borderRadius: 5,
-            backgroundColor: chipFill,
-            color: n.textSec,
-            border: "none",
+            backgroundColor: isDark ? chipFill : "rgba(59, 130, 246, 0.08)",
+            color: isDark ? n.textSec : "rgba(59, 130, 246, 0.8)",
+            border: isDark ? "none" : "1px solid rgba(59, 130, 246, 0.15)",
+            fontWeight: 500,
           },
-          colorPrimary: { backgroundColor: selectedFill, color: primaryMain },
+          colorPrimary: {
+            backgroundColor: isDark ? selectedFill : "rgba(59, 130, 246, 0.12)",
+            color: primaryMain,
+            border: isDark ? "none" : "1px solid rgba(59, 130, 246, 0.2)",
+          },
           outlinedPrimary: {
-            borderColor: isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.22)",
+            borderColor: isDark
+              ? "rgba(255,255,255,0.25)"
+              : "rgba(59, 130, 246, 0.3)",
             color: primaryMain,
             backgroundColor: "transparent",
           },
@@ -176,14 +214,21 @@ export const buildTheme = (mode = "light") => {
             "&.Mui-selected": {
               backgroundColor: selectedFill,
               color: primaryMain,
-              "&:hover": { backgroundColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)" },
+              "&:hover": {
+                backgroundColor: isDark
+                  ? "rgba(255,255,255,0.12)"
+                  : "rgba(0,0,0,0.08)",
+              },
             },
           },
         },
       },
       MuiMenuItem: {
         styleOverrides: {
-          root: { borderRadius: 5, "&:hover": { backgroundColor: neutralHover } },
+          root: {
+            borderRadius: 5,
+            "&:hover": { backgroundColor: neutralHover },
+          },
         },
       },
       MuiPaginationItem: {
@@ -194,14 +239,19 @@ export const buildTheme = (mode = "light") => {
             "&.Mui-selected": {
               backgroundColor: primaryMain,
               color: "#ffffff",
-              "&:hover": { backgroundColor: primaryHover, filter: "brightness(0.98)" },
+              "&:hover": {
+                backgroundColor: primaryHover,
+                filter: "brightness(0.98)",
+              },
             },
           },
         },
       },
       MuiLinearProgress: {
         styleOverrides: {
-          root: { backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#E5E7EB" },
+          root: {
+            backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "#E5E7EB",
+          },
           bar: { backgroundColor: primaryMain },
         },
       },

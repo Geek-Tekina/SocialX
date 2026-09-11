@@ -5,12 +5,12 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const { RateLimiterRedis } = require("rate-limiter-flexible");
-const Redis = require("ioredis");
 const { rateLimit } = require("express-rate-limit");
 const { RedisStore } = require("rate-limit-redis");
 const routes = require("./routes/identity-service");
 const errorHandler = require("./middleware/errorHandler");
 const { requestLogger } = require("./utils/safeLog");
+const { initializeRedisClient } = require("./config/redisConfig");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,7 +21,8 @@ mongoose
   .then(() => logger.info("Connected to mongodb"))
   .catch((e) => logger.error("Mongo connection error", e));
 
-const redisClient = new Redis(process.env.REDIS_URL);
+// Initialize Redis client (supports both local and Upstash)
+const redisClient = initializeRedisClient();
 
 //middleware
 app.use(helmet());

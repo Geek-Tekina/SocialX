@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const Redis = require("ioredis");
 const cors = require("cors");
 const helmet = require("helmet");
 const postRoutes = require("./routes/post-routes");
@@ -9,6 +8,7 @@ const errorHandler = require("./middleware/errorHandler");
 const logger = require("./utils/logger");
 const { connectToRabbitMQ } = require("./utils/rabbitmq");
 const { requestLogger } = require("./utils/safeLog");
+const { initializeRedisClient } = require("./config/redisConfig");
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -19,7 +19,8 @@ mongoose
   .then(() => logger.info("Connected to mongodb"))
   .catch((e) => logger.error("Mongo connection error", e));
 
-const redisClient = new Redis(process.env.REDIS_URL);
+// Initialize Redis client (supports both local and Upstash)
+const redisClient = initializeRedisClient();
 
 //middleware
 app.use(helmet());

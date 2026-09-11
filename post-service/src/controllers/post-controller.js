@@ -90,7 +90,9 @@ const getAllPosts = async (req, res) => {
     const cachedPosts = await req.redisClient.get(cacheKey);
 
     if (cachedPosts) {
-      return res.json(JSON.parse(cachedPosts));
+      const parsedPosts =
+        typeof cachedPosts === "string" ? JSON.parse(cachedPosts) : cachedPosts;
+      return res.json(parsedPosts);
     }
 
     const posts = await Post.find({})
@@ -133,7 +135,9 @@ const getPost = async (req, res) => {
     const cachedPost = await req.redisClient.get(cacheKey);
 
     if (cachedPost) {
-      return res.json(JSON.parse(cachedPost));
+      const parsedPost =
+        typeof cachedPost === "string" ? JSON.parse(cachedPost) : cachedPost;
+      return res.json(parsedPost);
     }
 
     const singlePostDetailsbyId = await Post.findById(postId)
